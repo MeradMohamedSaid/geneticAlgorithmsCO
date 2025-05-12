@@ -35,21 +35,7 @@ const costMatrix = [
   [35, 91, 92, 91, 80, 36, 61, 71, 74, 0],
 ];
 
-// Hardcode city positions on canvas
-const cityPositions = [
-  [50, 50],
-  [150, 30],
-  [250, 80],
-  [300, 150],
-  [200, 200],
-  [100, 220],
-  [60, 160],
-  [180, 100],
-  [280, 40],
-  [240, 180],
-];
-
-const TspGa2 = () => {
+const TpGATest = () => {
   const [alert, setAlert] = useState(null);
 
   const [numberOfCities, setNumberOfCities] = useState(10);
@@ -402,321 +388,262 @@ const TspGa2 = () => {
     }
     setSettings((old) => !old);
   };
+
+  const chartData = {
+    labels: fitnessHistory.map((_, i) => `Gen ${i}`),
+    datasets: [
+      {
+        label: "Best Fitness",
+        data: fitnessHistory,
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: "Fitness",
+        },
+      },
+      x: {
+        title: {
+          display: false,
+          text: "Generation",
+        },
+      },
+    },
+  };
+
   const navigate = useNavigate();
+
   return (
-    <div className="w-full min-h-screen bg-gray-900 text-white flex flex-col items-center p-6 position-relative">
+    <div className="w-full min-h-screen bg-gray-900 text-white flex flex-col items-center p-4 sm:p-6 relative">
+      {/* Settings Modal (Mobile Responsive) */}
       {settings && (
-        // <div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.8)] flex justify-center items-center">
-        //   <div className="position-relative w-[40%] rounded-xl bg-gradient-to-r from-gray-600 to-gray-800 p-8 box-border flex justify-center items-center flex-col gap-4">
-        //     <div className="w-full flex justify-between items-center">
-        //       <span className="text-4xl font-medium">Settings</span>
-        //       <span
-        //         className="text-2xl font-medium flex items-center justify-center py-2 px-4 text-center bg-red-500 rounded cursor-pointer"
-        //         onClick={handleSetting}
-        //       >
-        //         ✕
-        //       </span>
-        //     </div>
-        //     {/* Population Size */}
-        //     {alert && (
-        //       <Alert
-        //         message={alert.message}
-        //         type={alert.type}
-        //         onClose={handleAlertClose}
-        //       />
-        //     )}
-        //     <div className="w-full">
-        //       <label htmlFor="populationSizeInput" className="block text-white">
-        //         Population Size (even, 50-1000)
-        //       </label>
-        //       <input
-        //         id="populationSizeInput"
-        //         type="number"
-        //         value={populationSizeInput}
-        //         onChange={(e) => setPopulationSizeInput(Number(e.target.value))}
-        //         className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md"
-        //       />
-        //     </div>
+        <div className="fixed top-0 left-0 w-full h-full bg-black/80 flex justify-center items-center px-4 py-8 overflow-y-auto z-50">
+          <div className="w-full max-w-md rounded-xl bg-gradient-to-r from-gray-600 to-gray-800 p-6 box-border flex justify-center items-center flex-col gap-4">
+            <div className="w-full flex justify-between items-center">
+              <span className="text-2xl sm:text-3xl md:text-4xl font-medium text-white">
+                Settings
+              </span>
+              <span
+                className="text-xl sm:text-2xl font-medium flex items-center justify-center py-1 px-3 sm:py-2 sm:px-4 text-center bg-red-500 rounded cursor-pointer"
+                onClick={handleSetting}
+              >
+                ✕
+              </span>
+            </div>
 
-        //     {/* Mutation Rate */}
-        //     <div className="w-full">
-        //       <label htmlFor="mutationRateInput" className="block text-white">
-        //         Mutation Rate (0.1% - 5%)
-        //       </label>
-        //       <input
-        //         id="mutationRateInput"
-        //         type="number"
-        //         step="0.001"
-        //         value={mutationRateInput}
-        //         onChange={(e) => setMutationRateInput(Number(e.target.value))}
-        //         className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md"
-        //       />
-        //     </div>
+            {/* Alert Component */}
+            {alert && (
+              <Alert
+                message={alert.message}
+                type={alert.type}
+                onClose={handleAlertClose}
+              />
+            )}
 
-        //     {/* Max Generations */}
-        //     <div className="w-full">
-        //       <label htmlFor="maxGenerationsInput" className="block text-white">
-        //         Max Generations (10-500)
-        //       </label>
-        //       <input
-        //         id="maxGenerationsInput"
-        //         type="number"
-        //         value={maxGenerationsInput}
-        //         onChange={(e) => setMaxGenerationsInput(Number(e.target.value))}
-        //         className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md"
-        //       />
-        //     </div>
-
-        //     {/* Crossover Rate */}
-        //     <div className="w-full">
-        //       <label htmlFor="crossoverRateInput" className="block text-white">
-        //         Crossover Rate (50% - 100%)
-        //       </label>
-        //       <input
-        //         id="crossoverRateInput"
-        //         type="number"
-        //         step="0.01"
-        //         value={crossoverRateInput}
-        //         onChange={(e) => setCrossoverRateInput(Number(e.target.value))}
-        //         className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md"
-        //       />
-        //     </div>
-
-        //     {/* Elitism Count */}
-        //     <div className="w-full">
-        //       <label htmlFor="elitismCountInput" className="block text-white">
-        //         Elitism Count (under 10% of Population Size)
-        //       </label>
-        //       <input
-        //         id="elitismCountInput"
-        //         type="number"
-        //         value={elitismCountInput}
-        //         onChange={(e) => setElitismCountInput(Number(e.target.value))}
-        //         className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md"
-        //       />
-        //     </div>
-
-        //     {/* Submit Button */}
-        //     <div className="w-full">
-        //       <button
-        //         onClick={(e) => handleSubmit(e)}
-        //         type="submit"
-        //         className="w-full py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        //       >
-        //         Save
-        //       </button>
-        //     </div>
-        //   </div>
-        // </div>
-        <>
-          {/* Mobile Responsive Settings Modal */}
-          <div className="absolute top-0 left-0 w-full h-full bg-black/80 flex justify-center items-center px-4 py-8 overflow-y-auto">
-            <div className="w-full max-w-md rounded-xl bg-gradient-to-r from-gray-600 to-gray-800 p-6 box-border flex justify-center items-center flex-col gap-4">
-              <div className="w-full flex justify-between items-center">
-                <span className="text-2xl sm:text-3xl md:text-4xl font-medium text-white">
-                  Settings
-                </span>
-                <span
-                  className="text-xl sm:text-2xl font-medium flex items-center justify-center py-1 px-3 sm:py-2 sm:px-4 text-center bg-red-500 rounded cursor-pointer"
-                  onClick={handleSetting}
+            {/* Input Fields with Responsive Styling */}
+            <div className="w-full space-y-4">
+              {/* Population Size */}
+              <div className="w-full">
+                <label
+                  htmlFor="populationSizeInput"
+                  className="block text-white text-sm sm:text-base"
                 >
-                  ✕
-                </span>
+                  Population Size (even, 50-1000)
+                </label>
+                <input
+                  id="populationSizeInput"
+                  type="number"
+                  value={populationSizeInput}
+                  onChange={(e) =>
+                    setPopulationSizeInput(Number(e.target.value))
+                  }
+                  className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
+                />
               </div>
 
-              {/* Alert Component */}
-              {alert && (
-                <Alert
-                  message={alert.message}
-                  type={alert.type}
-                  onClose={handleAlertClose}
+              {/* Mutation Rate */}
+              <div className="w-full">
+                <label
+                  htmlFor="mutationRateInput"
+                  className="block text-white text-sm sm:text-base"
+                >
+                  Mutation Rate (0.1% - 5%)
+                </label>
+                <input
+                  id="mutationRateInput"
+                  type="number"
+                  step="0.001"
+                  value={mutationRateInput}
+                  onChange={(e) => setMutationRateInput(Number(e.target.value))}
+                  className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
                 />
-              )}
+              </div>
 
-              {/* Input Fields with Responsive Styling */}
-              <div className="w-full space-y-4">
-                {/* Population Size */}
-                <div className="w-full">
-                  <label
-                    htmlFor="populationSizeInput"
-                    className="block text-white text-sm sm:text-base"
-                  >
-                    Population Size (even, 50-1000)
-                  </label>
-                  <input
-                    id="populationSizeInput"
-                    type="number"
-                    value={populationSizeInput}
-                    onChange={(e) =>
-                      setPopulationSizeInput(Number(e.target.value))
-                    }
-                    className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
-                  />
-                </div>
+              {/* Max Generations */}
+              <div className="w-full">
+                <label
+                  htmlFor="maxGenerationsInput"
+                  className="block text-white text-sm sm:text-base"
+                >
+                  Max Generations (10-500)
+                </label>
+                <input
+                  id="maxGenerationsInput"
+                  type="number"
+                  value={maxGenerationsInput}
+                  onChange={(e) =>
+                    setMaxGenerationsInput(Number(e.target.value))
+                  }
+                  className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
+                />
+              </div>
 
-                {/* Mutation Rate */}
-                <div className="w-full">
-                  <label
-                    htmlFor="mutationRateInput"
-                    className="block text-white text-sm sm:text-base"
-                  >
-                    Mutation Rate (0.1% - 5%)
-                  </label>
-                  <input
-                    id="mutationRateInput"
-                    type="number"
-                    step="0.001"
-                    value={mutationRateInput}
-                    onChange={(e) =>
-                      setMutationRateInput(Number(e.target.value))
-                    }
-                    className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
-                  />
-                </div>
+              {/* Crossover Rate */}
+              <div className="w-full">
+                <label
+                  htmlFor="crossoverRateInput"
+                  className="block text-white text-sm sm:text-base"
+                >
+                  Crossover Rate (50% - 100%)
+                </label>
+                <input
+                  id="crossoverRateInput"
+                  type="number"
+                  step="0.01"
+                  value={crossoverRateInput}
+                  onChange={(e) =>
+                    setCrossoverRateInput(Number(e.target.value))
+                  }
+                  className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
+                />
+              </div>
 
-                {/* Max Generations */}
-                <div className="w-full">
-                  <label
-                    htmlFor="maxGenerationsInput"
-                    className="block text-white text-sm sm:text-base"
-                  >
-                    Max Generations (10-500)
-                  </label>
-                  <input
-                    id="maxGenerationsInput"
-                    type="number"
-                    value={maxGenerationsInput}
-                    onChange={(e) =>
-                      setMaxGenerationsInput(Number(e.target.value))
-                    }
-                    className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
-                  />
-                </div>
+              {/* Elitism Count */}
+              <div className="w-full">
+                <label
+                  htmlFor="elitismCountInput"
+                  className="block text-white text-sm sm:text-base"
+                >
+                  Elitism Count (under 10% of Population Size)
+                </label>
+                <input
+                  id="elitismCountInput"
+                  type="number"
+                  value={elitismCountInput}
+                  onChange={(e) => setElitismCountInput(Number(e.target.value))}
+                  className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
+                />
+              </div>
 
-                {/* Crossover Rate */}
-                <div className="w-full">
-                  <label
-                    htmlFor="crossoverRateInput"
-                    className="block text-white text-sm sm:text-base"
-                  >
-                    Crossover Rate (50% - 100%)
-                  </label>
-                  <input
-                    id="crossoverRateInput"
-                    type="number"
-                    step="0.01"
-                    value={crossoverRateInput}
-                    onChange={(e) =>
-                      setCrossoverRateInput(Number(e.target.value))
-                    }
-                    className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
-                  />
-                </div>
-
-                {/* Elitism Count */}
-                <div className="w-full">
-                  <label
-                    htmlFor="elitismCountInput"
-                    className="block text-white text-sm sm:text-base"
-                  >
-                    Elitism Count (under 10% of Population Size)
-                  </label>
-                  <input
-                    id="elitismCountInput"
-                    type="number"
-                    value={elitismCountInput}
-                    onChange={(e) =>
-                      setElitismCountInput(Number(e.target.value))
-                    }
-                    className="w-full p-2 mt-2 bg-gray-700 text-white rounded-md text-sm sm:text-base"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <div className="w-full">
-                  <button
-                    onClick={(e) => handleSubmit(e)}
-                    type="submit"
-                    className="w-full py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm sm:text-base"
-                  >
-                    Save
-                  </button>
-                </div>
+              {/* Submit Button */}
+              <div className="w-full">
+                <button
+                  onClick={(e) => handleSubmit(e)}
+                  type="submit"
+                  className="w-full py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm sm:text-base"
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
-      <h1 className="text-3xl font-bold mb-4 flex items-center justify-center w-full gap-4">
+
+      {/* Header with Responsive Typography */}
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 flex flex-col sm:flex-row items-center justify-center w-full gap-2 sm:gap-4 text-center">
         <span
-          className="text-sm font-normal rounded p-2 bg-amber-50 text-black hover:bg-amber-200 transition cursor-pointer"
+          className="text-xs sm:text-sm font-normal rounded p-1 sm:p-2 bg-amber-50 text-black hover:bg-amber-200 transition cursor-pointer mb-2 sm:mb-0"
           onClick={() => navigate("/")}
         >
           Home
         </span>
-        TSP Genetic Algorithm - MERAD Mohamed Said{" "}
+        TSP Genetic Algorithm - MERAD Mohamed Said
       </h1>
 
-      <div className="w-full mb-6 flex justify-center items-center gap-6">
-        <div className="bg-gray-800 p-4 rounded w-full max-w-md ">
-          <p className="mb-2">
+      {/* Responsive Information Sections */}
+      <div className="w-full mb-6 flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-6">
+        <div className="bg-gray-800 p-4 rounded w-full max-w-md mb-2 sm:mb-0">
+          <p className="mb-2 text-sm sm:text-base">
             <span className="font-semibold">Number Of Cities:</span>{" "}
             {numberOfCities}
           </p>
-          <p className="mb-2">
+          <p className="mb-2 text-sm sm:text-base">
             <span className="font-semibold">Population Size:</span>{" "}
             {populationSize}
           </p>
-          <p>
-            <span className="font-semibold">Genrations:</span> {maxGenerations}
+          <p className="text-sm sm:text-base">
+            <span className="font-semibold">Generations:</span> {maxGenerations}
           </p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded w-full max-w-md ">
-          <p className="mb-2">
+        <div className="bg-gray-800 p-4 rounded w-full max-w-md mb-2 sm:mb-0">
+          <p className="mb-2 text-sm sm:text-base">
             <span className="font-semibold">Best Fitness:</span>{" "}
             {bestFitness !== null ? bestFitness : "Not computed yet"}
           </p>
-          <p className="mb-2">
+          <p className="mb-2 text-sm sm:text-base">
             <span className="font-semibold">Best Path:</span>{" "}
             {bestPath.length > 0 ? bestPath.join(" → ") : "Not computed yet"}
           </p>
-          <p>
+          <p className="text-sm sm:text-base">
             <span className="font-semibold">Generation:</span>{" "}
             {`${generation}/${maxGenerations}`}
           </p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded w-full max-w-md ">
+        <div className="bg-gray-800 p-4 rounded w-full max-w-md">
           <p
-            className="mb-2"
+            className="mb-2 text-sm sm:text-base"
             title="How much genetic material is exchanged between individuals to create new offspring. , must be between [50%] and [100%]."
           >
             <span className="font-semibold">CrossOver Rate:</span>{" "}
             {crossoverRate}
           </p>
           <p
-            className="mb-2"
+            className="mb-2 text-sm sm:text-base"
             title="The probability that random changes (mutations) are applied to individuals [0.1%-5%]."
           >
             <span className="font-semibold">Mutation Rate:</span> {mutationRate}
           </p>
-          <p title="The number of top-performing individuals automatically carried over unchanged to the next generation, must be less than [10%] of population size.">
+          <p
+            className="text-sm sm:text-base"
+            title="The number of top-performing individuals automatically carried over unchanged to the next generation, must be less than [10%] of population size."
+          >
             <span className="font-semibold">Elitism Count:</span> {elitismCount}
           </p>
         </div>
       </div>
-      <canvas ref={canvasRef} width={400} height={300} className="mb-6" />
 
-      <div className="flex justify-center items-center gap-2">
+      {/* Responsive Canvas */}
+      <canvas
+        ref={canvasRef}
+        width={400}
+        height={300}
+        className="mb-6 max-w-full h-auto max-h-200"
+      />
+
+      {/* Responsive Buttons */}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-2 mb-6">
         <button
           onClick={runGA}
           disabled={isRunning}
-          className={
+          className={`w-full sm:w-auto px-4 py-2 rounded ${
             isRunning
-              ? "bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded mb-6 cursor-not-allowed transition duration-200 ease-in-out"
-              : "bg-green-500 hover:bg-green-600 px-4 py-2 rounded mb-6 cursor-pointer duration-200 ease-in-out"
-          }
+              ? "bg-orange-500 hover:bg-orange-600 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600 cursor-pointer"
+          } transition duration-200 ease-in-out text-sm sm:text-base`}
         >
           {isRunning ? "GA Running..." : "Start"}
         </button>
@@ -724,39 +651,80 @@ const TspGa2 = () => {
         <button
           onClick={handleSetting}
           disabled={isRunning}
-          className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded mb-6 cursor-pointer"
+          className="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 rounded cursor-pointer text-sm sm:text-base"
         >
           Settings
         </button>
       </div>
+
+      {/* Responsive Convergence Graph */}
       <div className="bg-gray-800 p-4 rounded w-full max-w-md box-border">
-        <h2 className="text-lg font-semibold mb-2">
-          Convergence Graph -{" Best fitness : "}
+        <h2 className="text-base sm:text-lg font-semibold mb-2">
+          Convergence Graph - Best fitness:{" "}
           {bestFitness !== null ? bestFitness : " */* "}
         </h2>
-        <Line
-          data={{
-            labels: fitnessHistory.map((_, idx) => idx + 1),
-            datasets: [
-              {
-                label: "Best Fitness",
-                data: fitnessHistory,
-                borderColor: "lime",
-                backgroundColor: "rgba(50,205,50,0.2)",
-              },
-            ],
-          }}
-          options={{
-            scales: {
-              y: {
-                beginAtZero: false,
-              },
-            },
-          }}
-        />
+        <div className="relative w-full pb-[56.25%]">
+          {" "}
+          {/* 16:9 Aspect Ratio Container */}
+          <div className="absolute top-0 left-0 w-full h-full">
+            <Line
+              data={{
+                labels: fitnessHistory.map((_, idx) => idx + 1),
+                datasets: [
+                  {
+                    label: "Best Fitness",
+                    data: fitnessHistory,
+                    borderColor: "lime",
+                    backgroundColor: "rgba(50,205,50,0.2)",
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: true,
+                layout: {
+                  padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                  },
+                },
+                scales: {
+                  y: {
+                    beginAtZero: false,
+                    ticks: {
+                      color: "white",
+                      title: true,
+                      text: "Fitness", // Ensures y-axis labels are visible on dark background
+                    },
+                    grid: {
+                      color: "rgba(255,255,255,0.1)", // Light grid lines
+                    },
+                  },
+                  x: {
+                    ticks: {
+                      color: "white", // Ensures x-axis labels are visible on dark background
+                    },
+                    grid: {
+                      color: "rgba(255,255,255,0.1)", // Light grid lines
+                    },
+                  },
+                },
+                plugins: {
+                  legend: {
+                    labels: {
+                      color: "white", // Ensures legend text is visible
+                    },
+                  },
+                },
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default TspGa2;
+export default TpGATest;
