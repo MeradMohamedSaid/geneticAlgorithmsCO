@@ -17,12 +17,12 @@ const Home = () => {
         TSP
       </button>
 
-      <button
+      {/* <button
         className="px-8 py-4 font-medium text-3xl rounded bg-amber-50 text-black hover:bg-amber-200 transition cursor-pointer"
         onClick={() => navigate("/sudoku")}
       >
         Sudoku solver
-      </button>
+      </button> */}
     </div>
   );
 };
