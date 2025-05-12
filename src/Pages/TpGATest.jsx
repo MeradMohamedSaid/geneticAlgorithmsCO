@@ -65,14 +65,12 @@ const TpGATest = () => {
     e.preventDefault();
     console.log("Submit clicked");
 
-    // Convert string inputs to numbers
     const populationSizeNum = parseInt(populationSizeInput, 10);
     const mutationRateNum = parseFloat(mutationRateInput);
     const maxGenerationsNum = parseInt(maxGenerationsInput, 10);
     const crossoverRateNum = parseFloat(crossoverRateInput);
     const elitismCountNum = parseInt(elitismCountInput, 10);
 
-    // Validate inputs
     if (
       populationSizeNum < 50 ||
       populationSizeNum > 1000 ||
@@ -117,7 +115,6 @@ const TpGATest = () => {
       return;
     }
 
-    // Update state
     setPopulationSize(populationSizeNum);
     setMutationRate(mutationRateNum);
     setMaxGenerations(maxGenerationsNum);
@@ -139,7 +136,7 @@ const TpGATest = () => {
   //
   //
   const handleAlertClose = () => {
-    setAlert(null); // Close the alert
+    setAlert(null);
   };
   const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
@@ -147,9 +144,9 @@ const TpGATest = () => {
       setShowAlert((old) => true);
       const timer = setTimeout(() => {
         setShowAlert(false);
-        setAlert(null); // Close the alert after 3 seconds
+        setAlert(null);
       }, 3000);
-      return () => clearTimeout(timer); // Cleanup the timer on unmount
+      return () => clearTimeout(timer);
     } else {
       setShowAlert((old) => false);
     }
@@ -199,7 +196,6 @@ const TpGATest = () => {
       "magenta",
     ];
 
-    // Draw each line segment with different color
     for (let i = 0; i < currentPath.length; i++) {
       const fromIdx = currentPath[i];
       const toIdx = currentPath[(i + 1) % currentPath.length];
@@ -214,7 +210,6 @@ const TpGATest = () => {
       ctx.stroke();
     }
 
-    // Draw points on top
     cityPositions.forEach(([x, y], index) => {
       ctx.fillStyle = "white";
       ctx.beginPath();
@@ -696,25 +691,25 @@ const TpGATest = () => {
                     ticks: {
                       color: "white",
                       title: true,
-                      text: "Fitness", // Ensures y-axis labels are visible on dark background
+                      text: "Fitness",
                     },
                     grid: {
-                      color: "rgba(255,255,255,0.1)", // Light grid lines
+                      color: "rgba(255,255,255,0.1)",
                     },
                   },
                   x: {
                     ticks: {
-                      color: "white", // Ensures x-axis labels are visible on dark background
+                      color: "white",
                     },
                     grid: {
-                      color: "rgba(255,255,255,0.1)", // Light grid lines
+                      color: "rgba(255,255,255,0.1)",
                     },
                   },
                 },
                 plugins: {
                   legend: {
                     labels: {
-                      color: "white", // Ensures legend text is visible
+                      color: "white",
                     },
                   },
                 },
